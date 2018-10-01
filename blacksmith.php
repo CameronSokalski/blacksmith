@@ -89,6 +89,8 @@ function buy($item) {
   //check if $item is specified
     //check if $item is valid (SETTINGS array)
       //check if player has enough gold (SETTINGS array)
+        //increase item in session by 1
+        //decrease gold in session by $item value
 }
 
 /**
