@@ -1,12 +1,24 @@
 <?php
-
+session_start();
 /**
  * createGameData
  * Creates a new session data
  * 
  * @return bool
  */
-
+function createGameData() {
+  $_SESSION['blacksmith'] = [
+    'response' => [],
+    'gold' => 15,
+    'wood' => 0,
+    'ore' => 0,
+    'sword' => 0,
+    'axe' => 0,
+    'staff' => 0,
+    'fire' => false
+  ];
+  return isset($_SESSION['blacksmith']);
+}
 
 /**
  * getResponse
@@ -43,7 +55,25 @@ function updateResponse ($response) {
  * 
  * @return string
  */
-
+function fire() {
+  //check status of fire in session
+  if($_SESSION['blacksmith']['fire']){
+    //turn fire off
+    $_SESSION['blacksmith']['fire'] = false;
+    return "The fire has been put out.";
+  } else {
+    //turn fire on
+    //check wood inventory
+    if($_SESSION['blacksmith']['wood'] > 0){
+      //remove a piece of wood and start the fire
+      $_SESSION['blacksmith']['wood']--;
+      $_SESSION['blacksmith']['fire'] = true;
+    } else {
+      //no wood
+      return "You do not have enough wood.";
+    }
+  }
+}
 
 /**
  * buy
@@ -53,7 +83,13 @@ function updateResponse ($response) {
  * @param [string] $item
  * @return string
  */
-
+function buy($item) {
+  //check if fire is on
+    //return 'put out fire'
+  //check if $item is specified
+    //check if $item is valid (SETTINGS array)
+      //check if player has enough gold (SETTINGS array)
+}
 
 /**
  * make
@@ -119,3 +155,24 @@ function help () {
  *      - updateResponse with invalid command  
  */
 
+//check if the form has been submitted
+if(isset($_POST['command'])) {
+  //split command and option
+  $command = explode(' ', strtolower($_POST['command']));
+  //check if command is valid
+  if(function_exists($command[0])) {
+    //check if an option is inlcuded
+    if(isset($command[1])) {
+      //there is an option
+      $response = $command[0]($command[1]);
+      updateResponse($response);
+    } else {
+      //there is no option
+      $response = $command[0]();
+      updateResponse($response);
+    }
+  } else {
+    //command is not valid
+    updateResponse("{$_POST['command']} is not a valid command.");
+  }
+}
